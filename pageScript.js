@@ -38,7 +38,7 @@ document.getElementById('saveReflection').addEventListener('click', function () 
 document.getElementById('downloadBtn').addEventListener('click', function () {
     const reflection =  today.toLocaleDateString('en-US', options)+"\n"+"\n"+document.getElementById('dailyReflection').value;
     const date = new Date();
-    const filename = `reflection_${date.toISOString().split('T')[0]}.txt`;
+    const filename = `Progress_${date.toISOString().split('T')[0]}.txt`;
 
     const blob = new Blob([reflection], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);

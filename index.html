@@ -3,53 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Planner - 9 May 2025</title>
+    <title>Daily Planner</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">        
-        <table class="planner-table">
+    <div class="container">
+        <div class="date-header">
+            <span id="currentDate">9 MAY 2025</span>
+            <div class="date-controls">
+                <button id="prevDay">←</button>
+                <button id="today">Today</button>
+                <button id="nextDay">→</button>
+            </div>
+        </div>
+        
+        <table class="planner-table" id="plannerTable">
             <tr>
-                <td>ENGLISH</td>
+                <td class="subject-english">ENGLISH</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
             <tr>
-                <td>ALGORITHMS</td>
+                <td class="subject-algorithms">ALGORITHMS</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
             <tr>
-                <td>PYTHON</td>
+                <td class="subject-python">PYTHON</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
             <tr>
-                <td>ROBOTICS</td>
+                <td class="subject-robotics">ROBOTICS</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
             <tr>
-                <td>MATH</td>
+                <td class="subject-math">MATH</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
             <tr>
-                <td>PHISICS</td>
+                <td class="subject-phisics">PHISICS</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
             <tr>
-                <td>PROJECT</td>
+                <td class="subject-project">PROJECT</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
             <tr>
-                <td>PORTFOLIO</td>
+                <td class="subject-portfolio">PORTFOLIO</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
             <tr>
-                <td>TEST</td>
+                <td class="subject-test">TEST</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
             <tr>
-                <td>PREP</td>
+                <td class="subject-prep">PREP</td>
                 <td><button class="move-btn">MOVE TO</button></td>
             </tr>
         </table>
+        
+        <div class="date-footer" id="dateFooter">09.05.2025</div>
     </div>
     <script src="script.js"></script>
 </body>

@@ -1,8 +1,8 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
+    background-color: #f5f7fa;
     margin: 0;
-    padding: 0;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,20 +10,61 @@ body {
 }
 
 .container {
-    text-align: center;
-    background-color: rgb(187, 187, 187);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    width: 90%;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 100%;
     max-width: 500px;
+    padding: 25px;
+}
+
+.date-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eaeaea;
+}
+
+#currentDate {
+    font-size: 22px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.date-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.date-controls button {
+    background-color: #e0e5ec;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.date-controls button:hover {
+    background-color: #d0d5dc;
+}
+
+#today {
+    background-color: #2980b9;
+    color: white;
+}
+
+#today:hover {
+    background-color: #3498db;
 }
 
 .planner-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 8px;
-    margin: 20px 0;
+    border-spacing: 0 10px;
 }
 
 .planner-table tr {
@@ -37,49 +78,43 @@ body {
 }
 
 .planner-table td {
-    padding: 14px 12px;
-    text-align: left;
-    border-radius: 6px;
+    padding: 14px 16px;
+    border-radius: 8px;
 }
 
 .planner-table td:first-child {
     font-weight: 600;
-    color: #2c3e50;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
 
 .planner-table td:last-child {
     text-align: right;
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
-/* Different colors for each subject */
-.planner-table tr:nth-child(1) td:first-child { color: #e74c3c; } /* ENGLISH */
-.planner-table tr:nth-child(2) td:first-child { color: #3498db; } /* ALGORITHMS */
-.planner-table tr:nth-child(3) td:first-child { color: #2ecc71; } /* PYTHON */
-.planner-table tr:nth-child(4) td:first-child { color: #9b59b6; } /* ROBOTICS */
-.planner-table tr:nth-child(5) td:first-child { color: #f39c12; } /* MATH */
-.planner-table tr:nth-child(6) td:first-child { color: #1abc9c; } /* PHISICS */
-.planner-table tr:nth-child(7) td:first-child { color: #d35400; } /* PROJECT */
-.planner-table tr:nth-child(8) td:first-child { color: #34495e; } /* PORTFOLIO */
-.planner-table tr:nth-child(9) td:first-child { color: #c0392b; } /* TEST */
-.planner-table tr:nth-child(10) td:first-child { color: #7f8c8d; } /* PREP */
+.subject-english { color: #e74c3c; }
+.subject-algorithms { color: #3498db; }
+.subject-python { color: #2ecc71; }
+.subject-robotics { color: #9b59b6; }
+.subject-math { color: #f39c12; }
+.subject-phisics { color: #1abc9c; }
+.subject-project { color: #d35400; }
+.subject-portfolio { color: #34495e; }
+.subject-test { color: #c0392b; }
+.subject-prep { color: #7f8c8d; }
 
 .move-btn {
     background-color: #2980b9;
     color: white;
     border: none;
-    padding: 8px 18px;
+    padding: 8px 16px;
     border-radius: 20px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.5px;
 }
 
 .move-btn:hover {
@@ -88,16 +123,25 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive adjustments */
+.date-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #7f8c8d;
+    font-size: 16px;
+    font-weight: 500;
+}
+
 @media (max-width: 480px) {
     .container {
-        padding: 20px;
+        padding: 15px;
     }
+    
     .planner-table td {
-        padding: 10px 8px;
+        padding: 10px 12px;
     }
+    
     .move-btn {
         padding: 6px 12px;
-        font-size: 11px;
+        font-size: 12px;
     }
 }

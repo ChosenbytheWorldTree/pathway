@@ -19,14 +19,6 @@ body {
     max-width: 500px;
 }
 
-.date-header {
-    color: #2c3e50;
-    margin-bottom: 25px;
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: 1px;
-}
-
 .planner-table {
     width: 100%;
     border-collapse: separate;
@@ -94,13 +86,6 @@ body {
     background-color: #3498db;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.date-footer {
-    color: #7f8c8d;
-    margin-top: 25px;
-    font-size: 16px;
-    font-weight: 500;
 }
 
 /* Responsive adjustments */

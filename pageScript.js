@@ -1,3 +1,13 @@
+// Prevent text selection on entire table
+document.querySelector('.planner-table').addEventListener('selectstart', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// Only allow text selection in textarea
+document.getElementById('dailyReflection').addEventListener('selectstart', function(e) {
+    e.stopPropagation();
+});
 // Subjects array
 const subjects = [
     "ENGLISH", "ALGORITHMS", "PYTHON", "ROBOTICS",

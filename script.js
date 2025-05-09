@@ -1,84 +1,32 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize
-  const subjects = [
-    "ENGLISH", "ALGORITHMS", "PYTHON", "ROBOTICS",
-    "MATH", "PHISICS", "PROJECT", "PORTFOLIO", "TEST", "PREP"
-  ];
-  
-  // 1. Progress Tracking
-  function updateProgress() {
-    const completed = subjects.filter(sub => 
-      localStorage.getItem(`completed_${sub}`) === 'true').length;
-    const percent = Math.round((completed / subjects.length) * 100);
     
-    document.querySelector('.progress-percent').textContent = `${percent}%`;
-    document.querySelector('.progress-fill').style.strokeDashoffset = 314 - (3.14 * percent);
-  }
-  
-  // 2. Streak Counter
-  function updateStreak() {
-    const lastCompleted = localStorage.getItem('lastCompletedDate');
-    const today = new Date().toDateString();
+    // Get today's date
+    const today = new Date();
     
-    if (lastCompleted === today) return;
+    // Format date for header (e.g., "9 MAY 2025")
+    function formatHeaderDate(date) {
+        const options = { day: 'numeric', month: 'short', year: 'numeric' };
+        return date.toLocaleDateString('en-US', options).toUpperCase();
+    }
     
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    // Format date for footer (e.g., "09.05.2025")
+    function formatFooterDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}.${month}.${year}`;
+    }
     
-    const streak = lastCompleted === yesterday.toDateString() 
-      ? parseInt(localStorage.getItem('streak') || 0) + 1 
-      : 1;
+    // Update the displayed dates
+    document.getElementById('currentDate').textContent = formatHeaderDate(today);
+    document.getElementById('dateFooter').textContent = formatFooterDate(today);
     
-    localStorage.setItem('streak', streak);
-    localStorage.setItem('lastCompletedDate', today);
-    document.getElementById('streak').textContent = streak;
-  }
-  
-  // 3. Task Completion
-  subjects.forEach((subject, index) => {
-    const btn = document.querySelectorAll('.complete-btn')[index];
-    btn.addEventListener('click', function() {
-      const isCompleted = localStorage.getItem(`completed_${subject}`) === 'true';
-      localStorage.setItem(`completed_${subject}`, !isCompleted);
-      updateProgress();
-      updateStreak();
+    // Button click handlers
+    document.querySelectorAll('.move-btn').forEach(button => {
+        const subject = button.parentElement.previousElementSibling.textContent;
+        button.addEventListener('click', () => {
+            console.log(`Moving to ${subject} for ${formatHeaderDate(today)}`);
+            // Add your navigation logic here
+        });
     });
-  });
-  
-  // 4. Pomodoro Timer
-  document.querySelector('.start-timer').addEventListener('click', function() {
-    let minutes = 25;
-    let seconds = 0;
-    
-    const timer = setInterval(() => {
-      document.querySelector('.timer').textContent = 
-        `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-      
-      if (seconds === 0) {
-        if (minutes === 0) {
-          clearInterval(timer);
-          alert("Time's up! Take a 5 minute break");
-          return;
-        }
-        minutes--;
-        seconds = 59;
-      } else {
-        seconds--;
-      }
-    }, 1000);
-  });
-  
-  // 5. Load Motivational Quote
-  fetch('https://api.quotable.io/random?tags=motivational')
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('quote').innerHTML = `
-        <p>"${data.content}"</p>
-        <small>- ${data.author}</small>
-      `;
-    });
-  
-  // Initialize displays
-  updateProgress();
-  updateStreak();
 });

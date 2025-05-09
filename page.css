@@ -210,3 +210,23 @@ button:hover {
   /* Place on top of each other */
   grid-area: 1 / 1 / 2 / 2;
 }
+.status-container {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.status-line {
+    padding: 3px 0;
+    font-family: monospace;
+}
+
+.completed {
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+.not-completed {
+    color: #e74c3c;
+}

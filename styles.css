@@ -145,3 +145,75 @@ body {
         font-size: 12px;
     }
 }
+/* Dashboard Styles */
+.dashboard {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.progress-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.progress-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 8;
+}
+
+.progress-fill {
+  fill: none;
+  stroke: #2ecc71;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.5s;
+}
+
+.progress-percent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* Pomodoro Timer */
+.pomodoro {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.timer {
+  font-size: 3rem;
+  font-family: monospace;
+  margin: 10px 0;
+}
+
+.start-timer {
+  background: #e74c3c;
+  color: white;
+  padding: 10px 20px;
+}
+
+/* Themes */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #2c3e50;
+}
+
+body.dark-theme {
+  --bg-color: #1a1a2e;
+  --text-color: #f1f1f1;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}

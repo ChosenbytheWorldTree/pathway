@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Planner</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
+    <div class="dashboard">
+        <div class="progress-ring">
+            <svg width="120" height="120">
+                <circle class="progress-bg" cx="60" cy="60" r="50" />
+                <circle class="progress-fill" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314" />
+            </svg>
+            <span class="progress-percent">0%</span>
+        </div>
+        <div class="streak-counter">
+            🔥 <span id="streak">0</span> day streak
+        </div>
+        <div id="quote" class="motivational-quote"></div>
+    </div>
     <div class="container">
 
         <div class="date-header" id="currentDate">9 2025</span></div>
-        
+
         <table class="planner-table" id="plannerTable">
             <tr>
                 <td class="subject-english">ENGLISH</td>
@@ -18,7 +33,8 @@
             </tr>
             <tr>
                 <td class="subject-algorithms">ALGORITHMS</td>
-                <td><input class="move-btn" type="button" onclick="location.href='algorithm.html'" value="MOVE TO" /></td>
+                <td><input class="move-btn" type="button" onclick="location.href='algorithm.html'" value="MOVE TO" />
+                </td>
             </tr>
             <tr>
                 <td class="subject-python">PYTHON</td>
@@ -53,9 +69,10 @@
                 <td><input class="move-btn" type="button" onclick="location.href='english.html'" value="MOVE TO" /></td>
             </tr>
         </table>
-        
+
         <div class="date-footer" id="dateFooter">09.05.2025</div>
     </div>
     <script src="script.js"></script>
 </body>
+
 </html>

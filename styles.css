@@ -11,18 +11,23 @@ body {
     /* Animated gradient background */
     background: linear-gradient(-45deg, #a70000, #ffd000, #00ad17, #0074aa);
     background-size: 400% 400%;
-    animation: gradientBG 35s ease infinite;
+    animation: gradientBG 15s ease infinite;
+    -webkit-tap-highlight-color: transparent;
 }
-
+.planner-table td {
+    -webkit-touch-callout: none;
+}
 @keyframes gradientBG {
     0% {
-        background-position: 0% 50%;
+        background-position: 0% 0%;
     }
+
     50% {
-        background-position: 100% 50%;
+        background-position: 100% 100%;
     }
+
     100% {
-        background-position: 0% 50%;
+        background-position: 0% 0%;
     }
 }
 

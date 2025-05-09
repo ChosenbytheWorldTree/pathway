@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize with May 9, 2025 as in the original design
     let currentDate = new Date(2025, 4, 9);
-    
     // DOM elements
     const currentDateElement = document.getElementById('currentDate');
     const dateFooterElement = document.getElementById('dateFooter');
@@ -29,27 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
         currentDateElement.textContent = formatHeaderDate(currentDate);
         dateFooterElement.textContent = formatFooterDate(currentDate);
     }
-    
-    // Navigation functions
-    function goToPrevDay() {
-        currentDate.setDate(currentDate.getDate() - 1);
-        updateDates();
-    }
-    
-    function goToNextDay() {
-        currentDate.setDate(currentDate.getDate() + 1);
-        updateDates();
-    }
-    
-    function goToToday() {
-        currentDate = new Date();
-        updateDates();
-    }
-        
-    // Event listeners
-    prevDayButton.addEventListener('click', goToPrevDay);
-    nextDayButton.addEventListener('click', goToNextDay);
-    todayButton.addEventListener('click', goToToday);
-    // Initialize dates
+
     updateDates();
 });

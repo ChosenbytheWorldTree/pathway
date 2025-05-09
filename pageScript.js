@@ -36,7 +36,7 @@ document.getElementById('saveReflection').addEventListener('click', function () 
 
 // Download functionality
 document.getElementById('downloadBtn').addEventListener('click', function () {
-    const reflection =  today.toLocaleDateString('en-US', options)+"\n"+document.getElementById('dailyReflection').value;
+    const reflection =  today.toLocaleDateString('en-US', options)+"\n"+"\n"+document.getElementById('dailyReflection').value;
     const date = new Date();
     const filename = `reflection_${date.toISOString().split('T')[0]}.txt`;
 

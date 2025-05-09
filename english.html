@@ -45,29 +45,29 @@
                 <li><strong>Vocabulary Building:</strong> Recognizing and using academic/technical terms</li>
                 <li><strong>Listening Comprehension:</strong> Following academic discussions</li>
             </ul>
-            <h3>Resources</h3>
-            <form>
-                <input type="checkbox" id="grammar" name="grammar" value="book">
-                <label for="grammar"> 📕 English Grammar in Use (Raymond Murphy) — the simplest and most effective grammar book.</label><br>
-                <input type="checkbox" id="duolingo" name="duolingo" value="duo">
-                <label for="duolingo"> 📱 <a href="https://www.duolingo.com/">Duolingo</a> (every day 15-30 min)</label><br>
-                <input type="checkbox" id="vehicle3" name="vehicle3" value="ted">
-                <label for="ted-ed"> 🎧 Listen to TED-Ed with subtitles (<a href="https://www.youtube.com/@TEDEd">YouTube</a>)</label><br>
-                <input type="checkbox" id="littleprince" name="littleprince" value="prince">
-                <label for="grammar"> 📚 Book: The Little Prince (in English)</label><br><br>
-                <button id="checksave">Save progress</progress></button>
-            </form>
-
-            <div class="resources">
-                <h4>Additional Resources:</h4>
-                <ul>
-                    <li><a href="https://www.duolingo.com/" target="_blank">Duolingo</a> for interactive vocabulary</li>
-                    <li><a href="https://eslgold.com/" target="_blank">ESL Gold</a> for grammar exercises</li>
-                    <li><a href="https://www.englishclub.com/" target="_blank">EnglishClub</a> for listening practice
-                    </li>
-                </ul>
+            <div class="english-checklist">
+                <h3>Resources</h3>
+                <div class="checklist-item">
+                    <input type="checkbox" id="eng1" class="task-checkbox">
+                    <label for="eng1"> 📕 English Grammar in Use (Raymond Murphy) — the simplest and most effective
+                        grammar book.</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="eng2" class="task-checkbox">
+                    <label for="eng2"> 📱 <a target="_blank" href="https://www.duolingo.com/">Duolingo</a> (every day
+                        15-30
+                        min)</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="eng3" class="task-checkbox">
+                    <label for="eng3"> 🎧 Listen to TED-Ed with subtitles (<a target="_blank"
+                            href="https://www.youtube.com/@TEDEd">YouTube</a>)</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="eng4" class="task-checkbox">
+                    <label for="eng4"> 📚 Book: The Little Prince (in English)</label>
+                </div>
             </div>
-
             <button class="complete-btn">Mark Complete</button>
         </div>
     </section>
@@ -76,11 +76,14 @@
         <h2>Daily Tracker
         </h2>
         <div id="taskStatus"></div>
+        <div id="completionStatus"></div>
+
         <div class="grow-wrap">
             <textarea id="dailyReflection" onInput="this.parentNode.dataset.replicatedValue = this.value"
                 placeholder="Enter your daily reflection (e.g., 'Mastered loops today!')"></textarea>
         </div>
         <div class="file-actions">
+            <button id="saveEnglishProgress">Save English Progress</button>
             <button id="saveReflection">Save</button>
             <button id="downloadBtn">Download</button>
             <label for="fileInput" class="file-label">Import</label>

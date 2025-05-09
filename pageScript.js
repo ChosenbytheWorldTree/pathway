@@ -11,6 +11,7 @@ const currentDateStr = today.toLocaleDateString('en-US', dateOptions).replace(/\
 
 // Initialize completion status
 const completionStatus = {};
+const checklistStatus = {}; // New object for checklist items
 subjects.forEach(subject => {
     completionStatus[subject] = false;
 });
@@ -25,12 +26,49 @@ const totalTasks = completeButtons.length;
 // Set up completion buttons
 completeButtons.forEach((button, index) => {
     const subject = subjects[index];
-    button.addEventListener('click', function () {
+    button.addEventListener('click', function() {
         completionStatus[subject] = !completionStatus[subject];
         updateCompletionStatus();
         updateProgress();
     });
 });
+
+// NEW: Set up checklist functionality
+function setupChecklist() {
+    const checkboxes = document.querySelectorAll('.task-checkbox');
+    checkboxes.forEach(checkbox => {
+        // Load saved state
+        if (localStorage.getItem(`checklist_${checkbox.id}`)) {
+            checkbox.checked = localStorage.getItem(`checklist_${checkbox.id}`) === 'true';
+        }
+        
+        // Save on change
+        checkbox.addEventListener('change', function() {
+            localStorage.setItem(`checklist_${checkbox.id}`, this.checked);
+            updateChecklistInStorage();
+        });
+    });
+}
+
+// NEW: Update checklist in storage
+function updateChecklistInStorage() {
+    const checkboxes = document.querySelectorAll('.task-checkbox');
+    checkboxes.forEach(checkbox => {
+        checklistStatus[checkbox.id] = checkbox.checked;
+    });
+}
+
+// NEW: Generate checklist text for export
+function generateChecklistText() {
+    let checklistText = "Checklist:\n";
+    const checkboxes = document.querySelectorAll('.checklist-item');
+    checkboxes.forEach(item => {
+        const checkbox = item.querySelector('.task-checkbox');
+        const label = item.querySelector('label');
+        checklistText += `${checkbox.checked ? "✓" : "✗"} ${label.textContent}\n`;
+    });
+    return checklistText;
+}
 
 function updateCompletionStatus() {
     let statusHTML = '';
@@ -48,7 +86,7 @@ function updateProgress() {
 }
 
 // Enhanced Tracker Functionality
-document.getElementById('saveReflection').addEventListener('click', function () {
+document.getElementById('saveReflection').addEventListener('click', function() {
     saveReflection();
     alert('Progress saved!');
 });
@@ -56,7 +94,8 @@ document.getElementById('saveReflection').addEventListener('click', function () 
 function saveReflection() {
     const reflectionText = document.getElementById('dailyReflection').value;
     const completionText = generateCompletionText();
-    const fullReflection = `${currentDateStr}\n————————\n--------\n${completionText}\n\n${reflectionText}`;
+    const checklistText = generateChecklistText(); // NEW: Include checklist
+    const fullReflection = `${currentDateStr}\n————————\n--------\n${completionText}\n\n${checklistText}\n\nReflection:\n${reflectionText}`;
 
     localStorage.setItem('dailyReflection', fullReflection);
     return fullReflection;
@@ -69,7 +108,7 @@ function generateCompletionText() {
 }
 
 // Download functionality
-document.getElementById('downloadBtn').addEventListener('click', function () {
+document.getElementById('downloadBtn').addEventListener('click', function() {
     const fullReflection = saveReflection();
     const filename = `progress_${currentDateStr.replace(/,/g, '-')}.txt`;
 
@@ -86,12 +125,12 @@ document.getElementById('downloadBtn').addEventListener('click', function () {
 });
 
 // Import functionality
-document.getElementById('fileInput').addEventListener('change', function (e) {
+document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = function(e) {
         const importedText = e.target.result;
         processImportedData(importedText);
     };
@@ -105,6 +144,7 @@ function processImportedData(importedText) {
     const lines = importedText.split('\n');
     let dateFound = false;
     let completionSection = false;
+    let checklistSection = false; // NEW: Track checklist section
     let reflectionText = '';
 
     // Check if current date exists in imported file
@@ -113,6 +153,7 @@ function processImportedData(importedText) {
             dateFound = true;
             // Skip the separator lines
             i += 2;
+            
             // Read completion status
             while (i < lines.length && lines[i].trim() !== '' && !lines[i].includes('———————')) {
                 const line = lines[i].trim();
@@ -125,8 +166,42 @@ function processImportedData(importedText) {
                 }
                 i++;
             }
+            
+            // NEW: Skip to checklist section
+            while (i < lines.length && !lines[i].includes('Checklist:')) {
+                i++;
+            }
+            
+            // NEW: Read checklist items
+            if (i < lines.length && lines[i].includes('Checklist:')) {
+                i++;
+                while (i < lines.length && lines[i].trim() !== '' && !lines[i].includes('Reflection:')) {
+                    const line = lines[i].trim();
+                    if (line.startsWith('✓') || line.startsWith('✗')) {
+                        const isChecked = line.startsWith('✓');
+                        const labelText = line.substring(2);
+                        
+                        // Find matching checkbox and update
+                        document.querySelectorAll('.checklist-item').forEach(item => {
+                            const label = item.querySelector('label');
+                            if (label && label.textContent === labelText) {
+                                const checkbox = item.querySelector('.task-checkbox');
+                                checkbox.checked = isChecked;
+                                localStorage.setItem(`checklist_${checkbox.id}`, isChecked);
+                            }
+                        });
+                    }
+                    i++;
+                }
+            }
+            
             // The rest is reflection text
-            reflectionText = lines.slice(i).join('\n').trim();
+            while (i < lines.length && !lines[i].includes('Reflection:')) {
+                i++;
+            }
+            if (i < lines.length) {
+                reflectionText = lines.slice(i + 1).join('\n').trim();
+            }
             break;
         }
     }
@@ -154,6 +229,7 @@ function loadSavedData() {
     if (savedData) {
         processImportedData(savedData);
     }
+    setupChecklist(); // NEW: Initialize checklist
 }
 
 // Initialize

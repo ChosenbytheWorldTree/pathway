@@ -45,24 +45,11 @@ document.addEventListener('DOMContentLoaded', function() {
         currentDate = new Date();
         updateDates();
     }
-    
-    // Button click handlers
-    function handleMoveButtonClick(subject) {
-        alert(`Navigating to ${subject} for ${formatHeaderDate(currentDate)}`);
-        // In a real app, you would navigate to the subject page
-        // window.location.href = `/subject/${subject.toLowerCase()}?date=${currentDate.toISOString()}`;
-    }
-    
+        
     // Event listeners
     prevDayButton.addEventListener('click', goToPrevDay);
     nextDayButton.addEventListener('click', goToNextDay);
     todayButton.addEventListener('click', goToToday);
-    
-    moveButtons.forEach(button => {
-        const subject = button.parentElement.previousElementSibling.textContent;
-        button.addEventListener('click', () => handleMoveButtonClick(subject));
-    });
-    
     // Initialize dates
     updateDates();
 });

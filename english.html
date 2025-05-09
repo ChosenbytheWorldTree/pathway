@@ -45,6 +45,18 @@
                 <li><strong>Vocabulary Building:</strong> Recognizing and using academic/technical terms</li>
                 <li><strong>Listening Comprehension:</strong> Following academic discussions</li>
             </ul>
+            <h3>Resources</h3>
+            <form>
+                <input type="checkbox" id="grammar" name="grammar" value="book">
+                <label for="grammar"> 📕 English Grammar in Use (Raymond Murphy) — the simplest and most effective grammar book.</label><br>
+                <input type="checkbox" id="duolingo" name="duolingo" value="duo">
+                <label for="duolingo"> 📱 <a href="https://www.duolingo.com/">Duolingo</a> (every day 15-30 min)</label><br>
+                <input type="checkbox" id="vehicle3" name="vehicle3" value="ted">
+                <label for="ted-ed"> 🎧 Listen to TED-Ed with subtitles (<a href="https://www.youtube.com/@TEDEd">YouTube</a>)</label><br>
+                <input type="checkbox" id="littleprince" name="littleprince" value="prince">
+                <label for="grammar"> 📚 Book: The Little Prince (in English)</label><br><br>
+                <button id="checksave">Save progress</progress></button>
+            </form>
 
             <div class="resources">
                 <h4>Additional Resources:</h4>
@@ -62,12 +74,11 @@
 
     <div class="tracker">
         <h2>Daily Tracker
-
         </h2>
         <div id="taskStatus"></div>
-        <div id="completionStatus"></div>
         <div class="grow-wrap">
-            <textarea id="dailyReflection" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder="Enter your daily reflection (e.g., 'Mastered loops today!')"></textarea>
+            <textarea id="dailyReflection" onInput="this.parentNode.dataset.replicatedValue = this.value"
+                placeholder="Enter your daily reflection (e.g., 'Mastered loops today!')"></textarea>
         </div>
         <div class="file-actions">
             <button id="saveReflection">Save</button>

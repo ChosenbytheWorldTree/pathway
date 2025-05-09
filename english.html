@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Planner-English</title>
+    <link rel="stylesheet" href="page.css">
+</head>
+
+<body>
+    <header>
+        <h1>STEM Daily Planner</h1>
+        <span id="currentDate"></span>
+    </header>
+    <section>
+        <div class="subject-card english">
+            <h2>English (60 min/day)</h2>
+            <span class="time-badge">9:00 AM - 10:00 AM</span>
+
+            <h3>Theoretical Background</h3>
+            <p>Grammar (sentence structure, tenses: present simple, past simple, future simple) forms the foundation of
+                clear communication. Vocabulary acquisition (academic/technical terms like "algorithm," "circuit") is
+                critical for TOEFL and MIT coursework. Listening comprehension enhances understanding of academic
+                lectures.
+            </p>
+
+            <h3>Tasks</h3>
+            <ul>
+                <li><strong>Grammar:</strong> Study tenses using <a href="https://www.grammarly.com/"
+                        target="_blank">Grammarly</a> and <a href="https://www.lingq.com/" target="_blank">LingQ</a> (15
+                    min)</li>
+                <li><strong>Vocabulary:</strong> Learn 20 words/day on <a href="https://quizlet.com/"
+                        target="_blank">Quizlet</a>, including terms from <a
+                        href="https://www.bbc.co.uk/learningenglish/" target="_blank">BBC Learning English</a> (15 min)
+                </li>
+                <li><strong>Listening:</strong> Watch <a href="https://ocw.mit.edu/" target="_blank">MIT
+                        OpenCourseWare</a>
+                    lectures (e.g., 6.0001 Intro to CS) with subtitles (30 min)</li>
+            </ul>
+
+            <h3>Skills Developed</h3>
+            <ul>
+                <li><strong>Grammar Mastery:</strong> Constructing correct sentences using basic tenses</li>
+                <li><strong>Vocabulary Building:</strong> Recognizing and using academic/technical terms</li>
+                <li><strong>Listening Comprehension:</strong> Following academic discussions</li>
+            </ul>
+
+            <div class="resources">
+                <h4>Additional Resources:</h4>
+                <ul>
+                    <li><a href="https://www.duolingo.com/" target="_blank">Duolingo</a> for interactive vocabulary</li>
+                    <li><a href="https://eslgold.com/" target="_blank">ESL Gold</a> for grammar exercises</li>
+                    <li><a href="https://www.englishclub.com/" target="_blank">EnglishClub</a> for listening practice
+                    </li>
+                </ul>
+            </div>
+
+            <button class="complete-btn">Mark Complete</button>
+        </div>
+    </section>
+
+    <div class="tracker">
+        <h2>Daily Tracker</h2>
+        <div id="taskStatus"></div>
+        <div class = "grow-wrap">
+        <textarea id="dailyReflection" placeholder="Enter your daily reflection (e.g., 'Mastered loops today!')" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ddd; margin-top: 10px;" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+        </div>
+        <div class="file-actions">
+            <button id="saveReflection">Save</button>
+            <button id="downloadBtn">Download</button>
+            <label for="fileInput" class="file-label">Import</label>
+            <input type="file" id="fileInput" class="file-input" accept=".txt">
+        </div>
+    </div>
+    <script src="pageScript.js"></script>
+</body>
+</html>

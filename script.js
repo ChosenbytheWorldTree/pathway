@@ -1,13 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize with May 9, 2025 as in the original design
-    let currentDate = new Date(2025, 4, 9);
-    // DOM elements
-    const currentDateElement = document.getElementById('currentDate');
-    const dateFooterElement = document.getElementById('dateFooter');
-    const prevDayButton = document.getElementById('prevDay');
-    const nextDayButton = document.getElementById('nextDay');
-    const todayButton = document.getElementById('today');
-    const moveButtons = document.querySelectorAll('.move-btn');
+    // Get today's date
+    const today = new Date();
     
     // Format date for header (e.g., "9 MAY 2025")
     function formatHeaderDate(date) {
@@ -24,10 +17,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Update the displayed dates
-    function updateDates() {
-        currentDateElement.textContent = formatHeaderDate(currentDate);
-        dateFooterElement.textContent = formatFooterDate(currentDate);
-    }
-
-    updateDates();
+    document.getElementById('currentDate').textContent = formatHeaderDate(today);
+    document.getElementById('dateFooter').textContent = formatFooterDate(today);
+    
+    // Button click handlers
+    document.querySelectorAll('.move-btn').forEach(button => {
+        const subject = button.parentElement.previousElementSibling.textContent;
+        button.addEventListener('click', () => {
+            console.log(`Moving to ${subject} for ${formatHeaderDate(today)}`);
+            // Add your navigation logic here
+        });
+    });
 });

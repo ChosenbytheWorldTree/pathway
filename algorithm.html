@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Planner-Algorithm</title>
+    <link rel="stylesheet" href="page.css">
+</head>
+
+<body>
+    <header>
+        <h1>STEM Daily Planner</h1>
+        <span id="currentDate"></span>
+    </header>
+    <section>
+        <div class="subject-card python">
+            <h2>Python/Algorithms (90 min/day)</h2>
+            <span class="time-badge">10:30 AM - 12:00 PM</span>
+
+            <h3>Theoretical Background</h3>
+            <p>Programming fundamentals include variables (storing data), data types (int, string), control structures
+                (if-else, loops), and basic algorithms (linear search, bubble sort). These form the basis for coding and
+                logical problem-solving.</p>
+
+            <h3>Tasks</h3>
+            <ul>
+                <li>Learn variables, conditionals, loops on <a href="https://www.learnpython.org/"
+                        target="_blank">learnpython.org</a> (30 min)</li>
+                <li>Solve 3–5 problems/day on <a href="https://www.sololearn.com/" target="_blank">Sololearn</a> (e.g.,
+                    "Sum of Numbers") and <a href="https://leetcode.com/" target="_blank">LeetCode</a> (easy level) (30
+                    min)</li>
+                <li>Visualize algorithms on <a href="https://visualgo.net/" target="_blank">visualgo.net</a> (30 min)
+                </li>
+            </ul>
+
+            <h3>Skills Developed</h3>
+            <ul>
+                <li><strong>Coding Basics:</strong> Writing and debugging Python code</li>
+                <li><strong>Logical Reasoning:</strong> Structuring solutions to problems</li>
+                <li><strong>Algorithm Understanding:</strong> Grasping search and sort mechanics</li>
+            </ul>
+
+            <div class="resources">
+                <h4>Additional Resources:</h4>
+                <ul>
+                    <li><a href="https://www.codecademy.com/learn/learn-python-3" target="_blank">Codecademy Python</a>
+                        for interactive lessons</li>
+                    <li><a href="https://python.swaroopch.com/" target="_blank">A Byte of Python</a> for a free book
+                    </li>
+                    <li><a href="http://pythontutor.com/" target="_blank">Python Tutor</a> for code visualization</li>
+                </ul>
+            </div>
+
+            <button class="complete-btn">Mark Complete</button>
+        </div>
+    </section>
+
+    <div class="tracker">
+        <h2>Daily Tracker</h2>
+        <div id="taskStatus"></div>
+        <textarea id="dailyReflection" placeholder="Enter your daily reflection (e.g., 'Mastered loops today!')"
+            rows="3"
+            style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ddd; margin-top: 10px;"></textarea>
+        <button id="saveReflection">Save Reflection</button>
+    </div>
+    <script src="pageScript.js"></script>
+</body>
+
+</html>

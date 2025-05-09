@@ -14,6 +14,11 @@ body {
     margin: 0 auto;
     padding: 20px;
     background-color: #f5f7fa;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.planner-table td {
+    -webkit-touch-callout: none;
 }
 
 header {
@@ -147,17 +152,21 @@ button:hover {
 }
 
 .file-input {
-    display: none;
+    display: none;    
 }
 
 .file-label {
-    background-color: #3498db;
+    display: inline-block;
+    background-color: #2980b9;
     color: white;
-    padding: 8px 12px;
+    border: none;
+    padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
-    display: inline-block;
+    font-weight: 600;
+    margin-top: 10px;
 }
+
 
 .file-label:hover {
     background-color: #2980b9;

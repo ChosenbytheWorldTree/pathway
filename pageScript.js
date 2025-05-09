@@ -1,46 +1,79 @@
+// Subjects array
+const subjects = [
+    "ENGLISH", "ALGORITHMS", "PYTHON", "ROBOTICS",
+    "MATH", "PHISICS", "PROJECT", "PORTFOLIO", "TEST", "PREP"
+];
+
 // Display current date
 const today = new Date();
-const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
+const currentDateStr = today.toLocaleDateString('en-US', dateOptions).replace(/\//g, ',');
+
+// Initialize completion status
+const completionStatus = {};
+subjects.forEach(subject => {
+    completionStatus[subject] = false;
+});
 
 // Task completion tracking
 const completeButtons = document.querySelectorAll('.complete-btn');
-const taskStatus = document.getElementById('taskStatus');
+const taskStatusElement = document.getElementById('taskStatus');
+const completionStatusElement = document.getElementById('completionStatus');
 let completedTasks = 0;
 const totalTasks = completeButtons.length;
 
-completeButtons.forEach(button => {
+// Set up completion buttons
+completeButtons.forEach((button, index) => {
+    const subject = subjects[index];
     button.addEventListener('click', function () {
-        if (!this.classList.contains('completed')) {
-            this.classList.add('completed');
-            this.textContent = '✓ Completed';
-            this.style.backgroundColor = '#2ecc71';
-            completedTasks++;
-            updateProgress();
-        }
+        completionStatus[subject] = !completionStatus[subject];
+        updateCompletionStatus();
+        updateProgress();
     });
 });
 
-function updateProgress() {
-    taskStatus.innerHTML = `<strong>Progress:</strong> ${completedTasks}/${totalTasks} tasks completed (${Math.round((completedTasks / totalTasks) * 100)}%)`;
+function updateCompletionStatus() {
+    let statusHTML = '';
+    subjects.forEach(subject => {
+        statusHTML += `<div class="completed-status ${completionStatus[subject] ? 'completed' : 'not-completed'}">
+                    ${subject} ${completionStatus[subject] ? 'Completed' : "Don't Completed"}
+                </div>`;
+    });
+    completionStatusElement.innerHTML = statusHTML;
 }
 
-// Save reflection
+function updateProgress() {
+    completedTasks = Object.values(completionStatus).filter(Boolean).length;
+    taskStatusElement.innerHTML = `<strong>Progress:</strong> ${completedTasks}/${totalTasks} tasks completed (${Math.round((completedTasks / totalTasks) * 100)}%)`;
+}
+
+// Enhanced Tracker Functionality
 document.getElementById('saveReflection').addEventListener('click', function () {
-    const reflection = document.getElementById('dailyReflection').value;
-    if (reflection.trim() !== '') {
-        localStorage.setItem('dailyReflection', reflection);
-        alert('Reflection saved locally!');
-    }
+    saveReflection();
+    alert('Progress saved!');
 });
+
+function saveReflection() {
+    const reflectionText = document.getElementById('dailyReflection').value;
+    const completionText = generateCompletionText();
+    const fullReflection = `${currentDateStr}\n————————\n--------\n${completionText}\n\n${reflectionText}`;
+
+    localStorage.setItem('dailyReflection', fullReflection);
+    return fullReflection;
+}
+
+function generateCompletionText() {
+    return subjects.map(subject =>
+        `${subject} ${completionStatus[subject] ? 'Completed' : "Don't Completed"}`
+    ).join('\n');
+}
 
 // Download functionality
 document.getElementById('downloadBtn').addEventListener('click', function () {
-    const reflection =  today.toLocaleDateString('en-US', options)+"\n"+"\n"+document.getElementById('dailyReflection').value;
-    const date = new Date();
-    const filename = `Progress_${date.toISOString().split('T')[0]}.txt`;
+    const fullReflection = saveReflection();
+    const filename = `progress_${currentDateStr.replace(/,/g, '-')}.txt`;
 
-    const blob = new Blob([reflection], { type: 'text/plain' });
+    const blob = new Blob([fullReflection], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement('a');
@@ -60,23 +93,70 @@ document.getElementById('fileInput').addEventListener('change', function (e) {
     const reader = new FileReader();
     reader.onload = function (e) {
         const importedText = e.target.result;
-        const currentText = document.getElementById('dailyReflection').value;
-
-        // Combine imported text with existing text
-        document.getElementById('dailyReflection').value =
-            currentText + (currentText ? '\n\n' : '') + importedText;
-
-        // Save the combined text
-        localStorage.setItem('dailyReflection', document.getElementById('dailyReflection').value);
+        processImportedData(importedText);
     };
     reader.readAsText(file);
 
-    // Reset file input to allow re-importing the same file
+    // Reset file input
     e.target.value = '';
 });
 
-// Load saved reflection on page load
-const savedReflection = localStorage.getItem('dailyReflection');
-if (savedReflection) {
-    document.getElementById('dailyReflection').value = savedReflection;
+function processImportedData(importedText) {
+    const lines = importedText.split('\n');
+    let dateFound = false;
+    let completionSection = false;
+    let reflectionText = '';
+
+    // Check if current date exists in imported file
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].trim() === currentDateStr) {
+            dateFound = true;
+            // Skip the separator lines
+            i += 2;
+            // Read completion status
+            while (i < lines.length && lines[i].trim() !== '' && !lines[i].includes('———————')) {
+                const line = lines[i].trim();
+                const parts = line.split(' ');
+                const subject = parts[0];
+                const status = parts.slice(1).join(' ');
+
+                if (subjects.includes(subject)) {
+                    completionStatus[subject] = status === 'Completed';
+                }
+                i++;
+            }
+            // The rest is reflection text
+            reflectionText = lines.slice(i).join('\n').trim();
+            break;
+        }
+    }
+
+    if (dateFound) {
+        // Update UI with imported data
+        updateCompletionStatus();
+        updateProgress();
+        document.getElementById('dailyReflection').value = reflectionText;
+        saveReflection();
+        alert('Today\'s progress imported successfully!');
+    } else {
+        // If date not found, append the imported text to current reflection
+        const currentReflection = document.getElementById('dailyReflection').value;
+        document.getElementById('dailyReflection').value =
+            currentReflection + (currentReflection ? '\n\n' : '') + importedText;
+        saveReflection();
+        alert('Imported data appended to reflections!');
+    }
 }
+
+// Load saved data on page load
+function loadSavedData() {
+    const savedData = localStorage.getItem('dailyReflection');
+    if (savedData) {
+        processImportedData(savedData);
+    }
+}
+
+// Initialize
+loadSavedData();
+updateCompletionStatus();
+updateProgress();

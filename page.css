@@ -148,24 +148,33 @@ button:hover {
 
 .file-input {
     display: none;
-    resize: none;
-    padding: 10px 15px;
-    margin-top: 10px;
 }
 
 .file-label {
-    background-color: #2980b9;
+    background-color: #3498db;
     color: white;
-    padding: 10px 15px;
-    margin-top: 10px;
+    padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
     display: inline-block;
-
 }
 
 .file-label:hover {
     background-color: #2980b9;
+}
+
+.completed-status {
+    padding: 10px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.completed {
+    color: #2ecc71;
+}
+
+.not-completed {
+    color: #e74c3c;
 }
 .grow-wrap {
   /* easy way to plop the elements on top of each other and have them both sized based on the tallest one's height */

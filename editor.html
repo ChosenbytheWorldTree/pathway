@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Text Editor</title>
+    <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: #4285f4;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .tool-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px;
+            border-right: 1px solid #eee;
+            padding-right: 15px;
+        }
+        
+        .tool-group:last-child {
+            border-right: none;
+        }
+        
+        button, select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover, select:hover {
+            background-color: #f0f0f0;
+        }
+        
+        button.active {
+            background-color: #e0e0e0;
+        }
+        
+        .color-picker {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            border: 1px solid #ddd;
+        }
+        
+        .editor-container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        #editor {
+            min-height: 500px;
+            padding: 20px;
+            outline: none;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            padding: 8px 15px;
+            background-color: #4285f4;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .file-label:hover {
+            background-color: #3367d6;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Advanced Text Editor</h1>
+        </header>
+        
+        <div class="file-actions">
+            <input type="file" id="fileInput" class="file-input" accept=".txt,.text,.doc,.docx">
+            <label for="fileInput" class="file-label">Import</label>
+            <button id="downloadTxtBtn">Download as TXT</button>
+            <button id="downloadDocBtn">Download as DOCX</button>
+        </div>
+        
+        <div class="toolbar">
+            <div class="tool-group">
+                <select id="fontFamily">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                </select>
+                
+                <select id="fontSize">
+                    <option value="8pt">8pt</option>
+                    <option value="10pt">10pt</option>
+                    <option value="12pt" selected>12pt</option>
+                    <option value="14pt">14pt</option>
+                    <option value="18pt">18pt</option>
+                    <option value="24pt">24pt</option>
+                    <option value="36pt">36pt</option>
+                </select>
+            </div>
+            
+            <div class="tool-group">
+                <button id="boldBtn" title="Bold"><b>B</b></button>
+                <button id="italicBtn" title="Italic"><i>I</i></button>
+                <button id="underlineBtn" title="Underline"><u>U</u></button>
+                <button id="strikeBtn" title="Strikethrough"><s>S</s></button>
+            </div>
+            
+            <div class="tool-group">
+                <input type="color" id="textColor" class="color-picker" value="#000000" title="Text Color">
+                <input type="color" id="bgColor" class="color-picker" value="#ffffff" title="Background Color">
+            </div>
+            
+            <div class="tool-group">
+                <button id="alignLeftBtn" title="Align Left">⎣</button>
+                <button id="alignCenterBtn" title="Align Center">⎜</button>
+                <button id="alignRightBtn" title="Align Right">⎦</button>
+                <button id="alignJustifyBtn" title="Justify">☰</button>
+            </div>
+            
+            <div class="tool-group">
+                <button id="insertTableBtn" title="Insert Table">Table</button>
+                <button id="insertImageBtn" title="Insert Image">Image</button>
+                <button id="insertLinkBtn" title="Insert Link">Link</button>
+            </div>
+            
+            <div class="tool-group">
+                <button id="clearFormatBtn">Clear Formatting</button>
+            </div>
+        </div>
+        
+        <div class="editor-container">
+            <div id="editor" contenteditable="true">
+                <p style="font-size:12pt;font-family:Arial;">Start typing here... Use the toolbar above to format your text.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, 
+                    Table, TableRow, TableCell, ExternalHyperlink, ImageRun } = docx;
+            
+            const editor = document.getElementById('editor');
+            const fileInput = document.getElementById('fileInput');
+            const downloadTxtBtn = document.getElementById('downloadTxtBtn');
+            const downloadDocBtn = document.getElementById('downloadDocBtn');
+            
+            // Formatting buttons
+            const boldBtn = document.getElementById('boldBtn');
+            const italicBtn = document.getElementById('italicBtn');
+            const underlineBtn = document.getElementById('underlineBtn');
+            const strikeBtn = document.getElementById('strikeBtn');
+            const fontFamily = document.getElementById('fontFamily');
+            const fontSize = document.getElementById('fontSize');
+            const textColor = document.getElementById('textColor');
+            const bgColor = document.getElementById('bgColor');
+            const alignLeftBtn = document.getElementById('alignLeftBtn');
+            const alignCenterBtn = document.getElementById('alignCenterBtn');
+            const alignRightBtn = document.getElementById('alignRightBtn');
+            const alignJustifyBtn = document.getElementById('alignJustifyBtn');
+            const insertTableBtn = document.getElementById('insertTableBtn');
+            const insertImageBtn = document.getElementById('insertImageBtn');
+            const insertLinkBtn = document.getElementById('insertLinkBtn');
+            const clearFormatBtn = document.getElementById('clearFormatBtn');
+            
+            // Import file
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const isTextFile = file.type === 'text/plain' || 
+                                 file.name.endsWith('.txt') || 
+                                 file.name.endsWith('.text');
+                
+                if (!isTextFile) {
+                    alert('Please select a text file (.txt)');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    editor.innerHTML = e.target.result;
+                };
+                reader.readAsText(file);
+            });
+            
+            // Download as TXT
+            downloadTxtBtn.addEventListener('click', function() {
+                const content = editor.innerText;
+                const blob = new Blob([content], { type: 'text/plain' });
+                saveAs(blob, 'document.txt');
+            });
+            
+            // Download as DOCX with proper formatting
+            downloadDocBtn.addEventListener('click', async function() {
+                const doc = new Document({
+                    styles: {
+                        paragraphStyles: [{
+                            id: "Normal",
+                            name: "Normal",
+                            run: {
+                                size: 24, // 12pt
+                                font: "Arial"
+                            },
+                            paragraph: {
+                                spacing: {
+                                    line: 276, // 1.15 line spacing
+                                }
+                            }
+                        }]
+                    },
+                    sections: [{
+                        properties: {},
+                        children: await convertHtmlToDocx(editor)
+                    }]
+                });
+                
+                const blob = await docx.Packer.toBlob(doc);
+                saveAs(blob, "document.docx");
+            });
+            
+            // Convert HTML content to DOCX paragraphs
+            async function convertHtmlToDocx(container) {
+                const paragraphs = [];
+                
+                // Process each child node
+                for (const node of container.childNodes) {
+                    if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+                        paragraphs.push(createParagraphFromTextNode(node));
+                    } 
+                    else if (node.nodeType === Node.ELEMENT_NODE) {
+                        if (node.tagName === 'P' || node.tagName === 'DIV') {
+                            paragraphs.push(await createParagraphFromElement(node));
+                        } 
+                        else if (node.tagName === 'TABLE') {
+                            paragraphs.push(createTableFromElement(node));
+                        } 
+                        else if (node.tagName === 'IMG') {
+                            paragraphs.push(await createImageParagraph(node));
+                        } 
+                        else if (node.tagName === 'BR') {
+                            paragraphs.push(new Paragraph({}));
+                        } 
+                        else {
+                            // Handle other elements (spans, etc.) as paragraphs
+                            const p = await createParagraphFromElement(node);
+                            if (p.children && p.children.length > 0) {
+                                paragraphs.push(p);
+                            }
+                        }
+                    }
+                }
+                
+                return paragraphs;
+            }
+            
+            function createParagraphFromTextNode(node) {
+                return new Paragraph({
+                    children: [new TextRun({ text: node.textContent })],
+                });
+            }
+            
+            async function createParagraphFromElement(element) {
+                const children = [];
+                let currentRuns = [];
+                
+                // Recursively process all child nodes
+                await processNode(element, currentRuns, children);
+                
+                // Add any remaining runs
+                if (currentRuns.length > 0) {
+                    children.push(createTextRunFromStyles(currentRuns));
+                }
+                
+                // Get paragraph alignment
+                const alignment = getAlignment(element);
+                
+                return new Paragraph({
+                    children: children,
+                    alignment: alignment,
+                });
+            }
+            
+            async function processNode(node, currentRuns, children) {
+                for (const child of node.childNodes) {
+                    if (child.nodeType === Node.TEXT_NODE && child.textContent.trim() !== '') {
+                        currentRuns.push({
+                            text: child.textContent,
+                            node: node // Parent element defines the style
+                        });
+                    } 
+                    else if (child.nodeType === Node.ELEMENT_NODE) {
+                        // If we have current runs and the style changes, push them
+                        if (currentRuns.length > 0 && 
+                            !compareNodesForStyleContinuity(currentRuns[currentRuns.length-1].node, child)) {
+                            children.push(createTextRunFromStyles(currentRuns));
+                            currentRuns = [];
+                        }
+                        
+                        if (child.tagName === 'BR') {
+                            // Line break - push current runs and add a new paragraph
+                            if (currentRuns.length > 0) {
+                                children.push(createTextRunFromStyles(currentRuns));
+                                currentRuns = [];
+                            }
+                        } 
+                        else if (child.tagName === 'IMG') {
+                            // Handle images
+                            if (currentRuns.length > 0) {
+                                children.push(createTextRunFromStyles(currentRuns));
+                                currentRuns = [];
+                            }
+                            children.push(await createImageRun(child));
+                        } 
+                        else {
+                            // Process child element recursively
+                            await processNode(child, currentRuns, children);
+                        }
+                    }
+                }
+            }
+            
+            function compareNodesForStyleContinuity(node1, node2) {
+                // Compare relevant style properties
+                const style1 = window.getComputedStyle(node1);
+                const style2 = window.getComputedStyle(node2);
+                
+                return style1.fontWeight === style2.fontWeight &&
+                       style1.fontStyle === style2.fontStyle &&
+                       style1.textDecoration === style2.textDecoration &&
+                       style1.color === style2.color &&
+                       style1.backgroundColor === style2.backgroundColor;
+            }
+            
+            function createTextRunFromStyles(runs) {
+                if (runs.length === 0) return null;
+                
+                // Use the style from the first run's parent node
+                const parentNode = runs[0].node;
+                const style = window.getComputedStyle(parentNode);
+                
+                // Combine all text
+                const text = runs.map(r => r.text).join('');
+                
+                return new TextRun({
+                    text: text,
+                    bold: style.fontWeight === 'bold',
+                    italics: style.fontStyle === 'italic',
+                    underline: style.textDecoration.includes('underline'),
+                    strike: style.textDecoration.includes('line-through'),
+                    color: style.color !== 'rgb(0, 0, 0)' ? rgbToHex(style.color) : undefined,
+                    highlight: style.backgroundColor !== 'rgba(0, 0, 0, 0)' ? rgbToHex(style.backgroundColor) : undefined,
+                    size: style.fontSize ? parseInt(style.fontSize) * 2 : 24, // Convert px to half-points
+                    font: style.fontFamily.split(',')[0].replace(/['"]/g, '')
+                });
+            }
+            
+            function rgbToHex(rgb) {
+                if (rgb.startsWith('#')) return rgb;
+                
+                // Choose correct separator
+                const sep = rgb.indexOf(",") > -1 ? "," : " ";
+                // Turn "rgb(r,g,b)" into [r,g,b]
+                const rgbArray = rgb.substr(4).split(")")[0].split(sep);
+                
+                let r = (+rgbArray[0]).toString(16),
+                    g = (+rgbArray[1]).toString(16),
+                    b = (+rgbArray[2]).toString(16);
+                
+                if (r.length == 1) r = "0" + r;
+                if (g.length == 1) g = "0" + g;
+                if (b.length == 1) b = "0" + b;
+                
+                return "#" + r + g + b;
+            }
+            
+            function getAlignment(element) {
+                const style = window.getComputedStyle(element);
+                switch (style.textAlign) {
+                    case 'center': return AlignmentType.CENTER;
+                    case 'right': return AlignmentType.RIGHT;
+                    case 'justify': return AlignmentType.JUSTIFIED;
+                    default: return AlignmentType.LEFT;
+                }
+            }
+            
+            function createTableFromElement(tableElement) {
+                const rows = [];
+                
+                for (const row of tableElement.rows) {
+                    const cells = [];
+                    
+                    for (const cell of row.cells) {
+                        const cellParagraphs = [];
+                        
+                        for (const child of cell.childNodes) {
+                            if (child.nodeType === Node.TEXT_NODE) {
+                                cellParagraphs.push(
+                                    new Paragraph({
+                                        children: [new TextRun({ text: child.textContent })]
+                                    })
+                                );
+                            } else if (child.nodeType === Node.ELEMENT_NODE) {
+                                if (child.tagName === 'P' || child.tagName === 'DIV') {
+                                    cellParagraphs.push(createParagraphFromElement(child));
+                                }
+                            }
+                        }
+                        
+                        cells.push(
+                            new TableCell({
+                                children: cellParagraphs.length > 0 ? cellParagraphs : [new Paragraph("")]
+                            })
+                        );
+                    }
+                    
+                    rows.push(new TableRow({ children: cells }));
+                }
+                
+                return new Table({
+                    rows: rows,
+                });
+            }
+            
+            async function createImageParagraph(imgElement) {
+                // Convert image to base64 for embedding in DOCX
+                const base64Image = await getBase64Image(imgElement.src);
+                return new Paragraph({
+                    children: [
+                        new ImageRun({
+                            data: base64Image,
+                            transformation: {
+                                width: imgElement.width,
+                                height: imgElement.height
+                            }
+                        })
+                    ],
+                    alignment: AlignmentType.CENTER
+                });
+            }
+            
+            async function createImageRun(imgElement) {
+                const base64Image = await getBase64Image(imgElement.src);
+                return new ImageRun({
+                    data: base64Image,
+                    transformation: {
+                        width: imgElement.width,
+                        height: imgElement.height
+                    }
+                });
+            }
+            
+            function getBase64Image(imgUrl) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.crossOrigin = 'Anonymous';
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        const dataURL = canvas.toDataURL('image/png');
+                        resolve(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''));
+                    };
+                    img.src = imgUrl;
+                });
+            }
+            
+            // Formatting functions
+            function formatText(command, value = null, showUI = false) {
+                document.execCommand(command, showUI, value);
+                editor.focus();
+                updateButtonStates();
+            }
+            
+            // Button event listeners
+            boldBtn.addEventListener('click', () => {
+                formatText('bold');
+                boldBtn.classList.toggle('active', document.queryCommandState('bold'));
+            });
+            
+            italicBtn.addEventListener('click', () => {
+                formatText('italic');
+                italicBtn.classList.toggle('active', document.queryCommandState('italic'));
+            });
+            
+            underlineBtn.addEventListener('click', () => {
+                formatText('underline');
+                underlineBtn.classList.toggle('active', document.queryCommandState('underline'));
+            });
+            
+            strikeBtn.addEventListener('click', () => {
+                formatText('strikeThrough');
+                strikeBtn.classList.toggle('active', document.queryCommandState('strikeThrough'));
+            });
+            
+            fontFamily.addEventListener('change', () => {
+                formatText('fontName', fontFamily.value);
+            });
+            
+            fontSize.addEventListener('change', () => {
+                formatText('fontSize', fontSize.value);
+            });
+            
+            textColor.addEventListener('input', () => {
+                formatText('foreColor', textColor.value);
+            });
+            
+            bgColor.addEventListener('input', () => {
+                formatText('hiliteColor', bgColor.value);
+            });
+            
+            alignLeftBtn.addEventListener('click', () => {
+                formatText('justifyLeft');
+                updateAlignmentButtons('left');
+            });
+            
+            alignCenterBtn.addEventListener('click', () => {
+                formatText('justifyCenter');
+                updateAlignmentButtons('center');
+            });
+            
+            alignRightBtn.addEventListener('click', () => {
+                formatText('justifyRight');
+                updateAlignmentButtons('right');
+            });
+            
+            alignJustifyBtn.addEventListener('click', () => {
+                formatText('justifyFull');
+                updateAlignmentButtons('justify');
+            });
+            
+            insertTableBtn.addEventListener('click', () => {
+                const rows = prompt("Enter number of rows:", "2");
+                const cols = prompt("Enter number of columns:", "2");
+                
+                if (rows && cols) {
+                    let tableHtml = '<table style="width:100%;border-collapse:collapse;">';
+                    for (let i = 0; i < parseInt(rows); i++) {
+                        tableHtml += '<tr>';
+                        for (let j = 0; j < parseInt(cols); j++) {
+                            tableHtml += `<td style="border:1px solid #ddd;padding:8px;">Cell ${i+1},${j+1}</td>`;
+                        }
+                        tableHtml += '</tr>';
+                    }
+                    tableHtml += '</table>';
+                    
+                    formatText('insertHTML', tableHtml);
+                }
+            });
+            
+            insertImageBtn.addEventListener('click', () => {
+                const url = prompt("Enter image URL:", "https://via.placeholder.com/150");
+                if (url) {
+                    formatText('insertHTML', `<img src="${url}" style="max-width:100%;height:auto;">`);
+                }
+            });
+            
+            insertLinkBtn.addEventListener('click', () => {
+                const url = prompt("Enter link URL:", "https://");
+                if (url) {
+                    const selection = window.getSelection();
+                    if (selection.toString().trim() !== '') {
+                        formatText('createLink', url);
+                    } else {
+                        formatText('insertHTML', `<a href="${url}" target="_blank">${url}</a>`);
+                    }
+                }
+            });
+            
+            clearFormatBtn.addEventListener('click', () => {
+                formatText('removeFormat');
+                formatText('unlink');
+                // Reset active states
+                boldBtn.classList.remove('active');
+                italicBtn.classList.remove('active');
+                underlineBtn.classList.remove('active');
+                strikeBtn.classList.remove('active');
+                updateAlignmentButtons('left');
+            });
+            
+            // Update alignment buttons active state
+            function updateAlignmentButtons(alignment) {
+                alignLeftBtn.classList.remove('active');
+                alignCenterBtn.classList.remove('active');
+                alignRightBtn.classList.remove('active');
+                alignJustifyBtn.classList.remove('active');
+                
+                if (alignment === 'left') alignLeftBtn.classList.add('active');
+                if (alignment === 'center') alignCenterBtn.classList.add('active');
+                if (alignment === 'right') alignRightBtn.classList.add('active');
+                if (alignment === 'justify') alignJustifyBtn.classList.add('active');
+            }
+            
+            // Track cursor position to update button states
+            editor.addEventListener('mouseup', updateButtonStates);
+            editor.addEventListener('keyup', updateButtonStates);
+            
+            function updateButtonStates() {
+                boldBtn.classList.toggle('active', document.queryCommandState('bold'));
+                italicBtn.classList.toggle('active', document.queryCommandState('italic'));
+                underlineBtn.classList.toggle('active', document.queryCommandState('underline'));
+                strikeBtn.classList.toggle('active', document.queryCommandState('strikeThrough'));
+                
+                // Check alignment
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const parentElement = selection.getRangeAt(0).startContainer.parentElement;
+                    const textAlign = window.getComputedStyle(parentElement).textAlign;
+                    
+                    if (textAlign === 'center') updateAlignmentButtons('center');
+                    else if (textAlign === 'right') updateAlignmentButtons('right');
+                    else if (textAlign === 'justify') updateAlignmentButtons('justify');
+                    else updateAlignmentButtons('left');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

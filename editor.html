@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Text Editor</title>
+    <title>Advanced Text Editor with Links</title>
     <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
@@ -121,8 +121,9 @@
             background-color: #3367d6;
         }
         
-        .hidden {
-            display: none;
+        a {
+            color: #0066cc;
+            text-decoration: underline;
         }
         
         table {
@@ -149,7 +150,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>Advanced Text Editor</h1>
+            <h1>Advanced Text Editor with Links</h1>
         </header>
         
         <div class="file-actions">
@@ -213,6 +214,7 @@
         <div class="editor-container">
             <div id="editor" contenteditable="true">
                 <p style="font-size:12pt;font-family:Arial;">Start typing here... Use the toolbar above to format your text.</p>
+                <p style="font-size:12pt;font-family:Arial;">Example link: <a href="https://www.example.com" target="_blank">Visit Example.com</a></p>
             </div>
         </div>
     </div>
@@ -323,6 +325,9 @@
                         else if (node.tagName === 'BR') {
                             paragraphs.push(new Paragraph({}));
                         } 
+                        else if (node.tagName === 'A') {
+                            paragraphs.push(await createHyperlinkParagraph(node));
+                        }
                         else {
                             // Handle other elements (spans, etc.) as paragraphs
                             const p = await createParagraphFromElement(node);
@@ -351,7 +356,8 @@
                 
                 // Add any remaining runs
                 if (currentRuns.length > 0) {
-                    children.push(createTextRunFromStyles(currentRuns));
+                    const run = createTextRunFromStyles(currentRuns);
+                    if (run) children.push(run);
                 }
                 
                 // Get paragraph alignment
@@ -361,6 +367,67 @@
                     children: children,
                     alignment: alignment,
                 });
+            }
+            
+            async function createHyperlinkParagraph(anchorElement) {
+                const children = [];
+                let currentRuns = [];
+                
+                // Process the link text
+                for (const child of anchorElement.childNodes) {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        currentRuns.push({
+                            text: child.textContent,
+                            node: anchorElement
+                        });
+                    } else if (child.nodeType === Node.ELEMENT_NODE) {
+                        if (currentRuns.length > 0) {
+                            const run = createTextRunFromStyles(currentRuns);
+                            if (run) children.push(run);
+                            currentRuns = [];
+                        }
+                        
+                        // Handle nested elements within the link
+                        const nestedRun = await processNestedElement(child);
+                        if (nestedRun) children.push(nestedRun);
+                    }
+                }
+                
+                // Add any remaining runs
+                if (currentRuns.length > 0) {
+                    const run = createTextRunFromStyles(currentRuns);
+                    if (run) children.push(run);
+                }
+                
+                // Create the hyperlink
+                return new Paragraph({
+                    children: [
+                        new ExternalHyperlink({
+                            children: children,
+                            link: anchorElement.href
+                        })
+                    ],
+                    alignment: getAlignment(anchorElement.parentElement)
+                });
+            }
+            
+            async function processNestedElement(element) {
+                if (element.nodeType === Node.TEXT_NODE) {
+                    return new TextRun({ text: element.textContent });
+                } else if (element.nodeType === Node.ELEMENT_NODE) {
+                    const style = window.getComputedStyle(element);
+                    return new TextRun({
+                        text: element.textContent,
+                        bold: style.fontWeight === 'bold',
+                        italics: style.fontStyle === 'italic',
+                        underline: style.textDecoration.includes('underline'),
+                        strike: style.textDecoration.includes('line-through'),
+                        color: style.color !== 'rgb(0, 0, 0)' ? rgbToHex(style.color) : undefined,
+                        size: style.fontSize ? parseInt(style.fontSize) * 2 : 24,
+                        font: style.fontFamily.split(',')[0].replace(/['"]/g, '')
+                    });
+                }
+                return null;
             }
             
             async function processNode(node, currentRuns, children) {
@@ -375,31 +442,74 @@
                         // If we have current runs and the style changes, push them
                         if (currentRuns.length > 0 && 
                             !compareNodesForStyleContinuity(currentRuns[currentRuns.length-1].node, child)) {
-                            children.push(createTextRunFromStyles(currentRuns));
+                            const run = createTextRunFromStyles(currentRuns);
+                            if (run) children.push(run);
                             currentRuns = [];
                         }
                         
                         if (child.tagName === 'BR') {
                             // Line break - push current runs and add a new paragraph
                             if (currentRuns.length > 0) {
-                                children.push(createTextRunFromStyles(currentRuns));
+                                const run = createTextRunFromStyles(currentRuns);
+                                if (run) children.push(run);
                                 currentRuns = [];
                             }
                         } 
                         else if (child.tagName === 'IMG') {
                             // Handle images
                             if (currentRuns.length > 0) {
-                                children.push(createTextRunFromStyles(currentRuns));
+                                const run = createTextRunFromStyles(currentRuns);
+                                if (run) children.push(run);
                                 currentRuns = [];
                             }
                             children.push(await createImageRun(child));
                         } 
+                        else if (child.tagName === 'A') {
+                            // Handle hyperlinks
+                            if (currentRuns.length > 0) {
+                                const run = createTextRunFromStyles(currentRuns);
+                                if (run) children.push(run);
+                                currentRuns = [];
+                            }
+                            
+                            const hyperlink = await createHyperlinkRun(child);
+                            if (hyperlink) children.push(hyperlink);
+                        }
                         else {
                             // Process child element recursively
                             await processNode(child, currentRuns, children);
                         }
                     }
                 }
+            }
+            
+            async function createHyperlinkRun(anchorElement) {
+                const children = [];
+                
+                // Process the link text
+                for (const child of anchorElement.childNodes) {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        children.push(new TextRun({
+                            text: child.textContent,
+                            style: "Hyperlink"
+                        }));
+                    } else if (child.nodeType === Node.ELEMENT_NODE) {
+                        const nestedRun = await processNestedElement(child);
+                        if (nestedRun) children.push(nestedRun);
+                    }
+                }
+                
+                if (children.length === 0) {
+                    children.push(new TextRun({
+                        text: anchorElement.href,
+                        style: "Hyperlink"
+                    }));
+                }
+                
+                return new ExternalHyperlink({
+                    children: children,
+                    link: anchorElement.href
+                });
             }
             
             function compareNodesForStyleContinuity(node1, node2) {
@@ -485,6 +595,8 @@
                             } else if (child.nodeType === Node.ELEMENT_NODE) {
                                 if (child.tagName === 'P' || child.tagName === 'DIV') {
                                     cellParagraphs.push(createParagraphFromElement(child));
+                                } else if (child.tagName === 'A') {
+                                    cellParagraphs.push(createHyperlinkParagraph(child));
                                 }
                             }
                         }

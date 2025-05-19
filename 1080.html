@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>English Test Results</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'BravoRG';
+      src: url('https://fonts.cdnfonts.com/s/16888/BravoRG.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      font-family: 'BravoRG', sans-serif;
+      background-color: #2A3950;
+      color: #E9E9EB;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Russo One', sans-serif;
+      font-size: 72px;
+      color: #EF4A4E;
+    }
+
+    h2 {
+      font-family: 'Dosis', sans-serif;
+      font-size: 72px;
+      color: #2A3950;
+    }
+
+    h3 {
+      font-family: 'Dosis', sans-serif;
+      font-size: 72px;
+      color: #E9E9EB;
+      margin: 10px 0;
+    }
+
+    .container {
+      margin: 20px auto;
+      width: 100%;
+      max-width: 450px;
+      background-color: #42506B;
+      border-radius: 3rem;
+      border: 5px solid #3D619D;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 5px solid #3D619D;
+    }
+
+    td, th {
+      font-size: 22px;
+      font-family: 'BravoRG', sans-serif;
+      color: #E9E9EB;
+      border: 5px solid #3D619D;
+      text-align: center;
+      height: 50px;
+    }
+
+    .header {
+      font-family: 'Dosis', sans-serif;
+      font-size: 24px;
+      color: #E9E9EB;
+      font-weight: bold;
+    }
+
+    .green {
+      color: #009933;
+    }
+
+    .red {
+      color: #EF4A4E;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 30px;
+    }
+
+    .button, .import-button {
+      border: 2px solid #3D619D;
+      background-color: #42506B;
+      color: #E9E9EB;
+      font-family: 'Dosis', sans-serif;
+      font-size: 24px;
+      padding: 10px 25px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .import-button {
+      border: none;
+    }
+
+    .final-result {
+      font-size: 24px;
+      font-family: 'Dosis', sans-serif;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ENGLISH</h1>
+
+  <div class="container">
+
+    <h2>Introduction</h2>
+    <table>
+      <tr>
+        <th class="header">Duration</th>
+        <th class="header">Data</th>
+      </tr>
+      <tr>
+        <td>week1-week2</td>
+        <td>15.05.2025</td>
+      </tr>
+      <tr>
+        <th class="header">Results</th>
+        <th><button class="import-button">Import</button></th>
+      </tr>
+    </table>
+
+    <h2>Level1/Test</h2>
+    <table>
+      <tr>
+        <th class="header">#</th>
+        <th class="header">New</th>
+        <th class="header">Best</th>
+        <th class="header">Pass</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>105</td>
+        <td class="red">115</td>
+        <td class="green">105</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>98</td>
+        <td class="green">98</td>
+        <td class="green">90</td>
+      </tr>
+    </table>
+
+    <h2>Level2/Test</h2>
+    <table>
+      <tr>
+        <th class="header">#</th>
+        <th class="header">New</th>
+        <th class="header">Best</th>
+        <th class="header">Pass</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>90</td>
+        <td class="red">95</td>
+        <td class="green">90</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>90</td>
+        <td class="green">90</td>
+        <td class="green">90</td>
+      </tr>
+    </table>
+
+    <div class="final-result">
+      <h3>Final Result:</h3> <span class="red">False</span>
+    </div>
+
+    <div class="button-container">
+      <div class="button">Back</div>
+      <div class="button">Next</div>
+    </div>
+
+  </div>
+
+</body>
+</html>
